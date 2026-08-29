@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Product Store</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            max-width: 720px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+            color: #1f2933;
+        }
+        h1 {
+            margin-bottom: 0.25rem;
+        }
+        #session-banner {
+            min-height: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #147d64;
+        }
+        .toolbar {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+        }
+        input {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            font-size: 1rem;
+            border: 1px solid #cbd2d9;
+            border-radius: 6px;
+        }
+        button {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            border: 1px solid #1992d4;
+            border-radius: 6px;
+            background: #1992d4;
+            color: #ffffff;
+            cursor: pointer;
+        }
+        button.secondary {
+            background: #ffffff;
+            color: #1992d4;
+        }
+        #product-list {
+            list-style: none;
+            padding: 0;
+            border-top: 1px solid #f0f4f8;
+        }
+        #product-list li {
+            padding: 0.6rem 0.75rem;
+            border-bottom: 1px solid #f0f4f8;
+        }
+        nav {
+            margin-top: 2rem;
+        }
+        nav a {
+            color: #1992d4;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Product Store</h1>
+    <div id="session-banner"></div>
+</header>
+
+<section class="toolbar" aria-label="Add product">
+    <input id="product-name" placeholder="Enter product name" autocomplete="off">
+    <button id="add-product" type="button">Add Product</button>
+    <button id="clear-products" type="button" class="secondary">Clear List</button>
+</section>
+
+<ul id="product-list" aria-label="Products"></ul>
+
+<nav>
+    <a id="signin-link" href="login.html">Sign in</a>
+</nav>
+
+<script>
+    'use strict';
+
+    var input = document.getElementById('product-name');
+    var list = document.getElementById('product-list');
+    var banner = document.getElementById('session-banner');
+
+    function renderProducts(products) {
+        list.textContent = '';
+        products.forEach(function (product) {
+            var item = document.createElement('li');
+            item.textContent = product.name;
+            item.dataset.id = String(product.id);
+            list.appendChild(item);
+        });
+    }
+
+    function loadProducts() {
+        return fetch('/products')
+            .then(function (response) { return response.json(); })
+            .then(renderProducts);
+    }
+
+    function addProduct() {
+        var name = input.value.trim();
+        if (!name) {
+            return Promise.resolve();
+        }
+        return fetch('/products', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: name })
+        }).then(function (response) {
+            if (!response.ok) {
+                throw new Error('Failed to add product');
+            }
+            input.value = '';
+            return loadProducts();
+        });
+    }
+
+    function clearProducts() {
+        return fetch('/products', { method: 'DELETE' }).then(loadProducts);
+    }
+
+    function loadSession() {
+        return fetch('/api/me')
+            .then(function (response) { return response.json(); })
+            .then(function (account) {
+                banner.textContent = account.username ? 'Welcome, ' + account.username : '';
+            });
+    }
+
+    document.getElementById('add-product').addEventListener('click', addProduct);
+    document.getElementById('clear-products').addEventListener('click', clearProducts);
+
+    loadProducts();
+    loadSession();
+</script>
+</body>
+</html>

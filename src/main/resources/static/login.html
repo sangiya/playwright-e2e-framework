@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign in - Product Store</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+            max-width: 480px;
+            margin: 4rem auto;
+            padding: 0 1rem;
+            color: #1f2933;
+        }
+        h1 {
+            margin-bottom: 0.5rem;
+        }
+        .hint {
+            color: #52606d;
+            margin-top: 0;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        label {
+            font-weight: 600;
+        }
+        input {
+            padding: 0.5rem 0.75rem;
+            font-size: 1rem;
+            border: 1px solid #cbd2d9;
+            border-radius: 6px;
+        }
+        button {
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            border: 1px solid #1992d4;
+            border-radius: 6px;
+            background: #1992d4;
+            color: #ffffff;
+            cursor: pointer;
+        }
+        #login-error {
+            margin-top: 1rem;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #e12d39;
+            border-radius: 6px;
+            background: #fff5f5;
+            color: #e12d39;
+            font-weight: 600;
+        }
+        nav {
+            margin-top: 2rem;
+        }
+        nav a {
+            color: #1992d4;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <h1>Sign in</h1>
+    <p class="hint">Use admin / admin123</p>
+
+    <div id="login-error" hidden>Invalid username or password</div>
+
+    <form action="/login" method="post">
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text" autocomplete="username" required>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button type="submit">Sign in</button>
+    </form>
+
+    <nav><a href="index.html">Back to store</a></nav>
+</main>
+
+<script>
+    'use strict';
+    if (new URLSearchParams(window.location.search).has('error')) {
+        document.getElementById('login-error').hidden = false;
+    }
+</script>
+</body>
+</html>

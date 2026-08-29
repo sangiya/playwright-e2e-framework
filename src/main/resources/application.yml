@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: playwright-e2e-framework
+
+server:
+  port: 8080
+  servlet:
+    session:
+      tracking-modes: cookie
